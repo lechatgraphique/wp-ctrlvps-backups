@@ -85,8 +85,23 @@ export interface AlertEntry {
 })
 export class BackupApiService {
   private readonly http = inject(HttpClient);
-  // Utiliser un chemin relatif pour passer par Traefik et l'authentification HTTP basique
-  private readonly apiUrl = '/api';
+  // Détecter l'environnement : en production, utiliser le chemin relatif pour Traefik
+  // En développement local, utiliser localhost
+  private readonly apiUrl = this.getApiUrl();
+
+  private getApiUrl(): string {
+    // En production (dans Docker), utiliser le chemin relatif pour passer par Traefik
+    // En développement local, utiliser localhost
+    if (typeof window !== 'undefined') {
+      const hostname = window.location.hostname;
+      // Si on est sur localhost ou 127.0.0.1, utiliser localhost:3000
+      if (hostname === 'localhost' || hostname === '127.0.0.1') {
+        return 'http://localhost:3000/api';
+      }
+    }
+    // Sinon, utiliser le chemin relatif pour passer par Traefik/Nginx
+    return '/api';
+  }
 
   getLogs(): Observable<LogEntry[]> {
     return this.http.get<LogEntry[]>(`${this.apiUrl}/logs`);
