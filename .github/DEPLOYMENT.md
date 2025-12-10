@@ -34,19 +34,35 @@ Copiez **tout le contenu** (y compris `-----BEGIN OPENSSH PRIVATE KEY-----` et `
 
 ⚠️ **Important** : Ne partagez jamais votre clé privée publiquement !
 
+## 🐳 Configuration Docker Compose sur le VPS
+
+**Première installation** : Créez le fichier `docker-compose.backups.yml` sur le VPS :
+
+```bash
+# Sur le VPS
+cd /home/deploy/docker-services
+
+# Copier le fichier exemple depuis le repo
+cp apps/wp-ctrl-backups/docker-compose.backups.yml.example docker-compose.backups.yml
+
+# Éditer le fichier pour adapter les variables d'environnement si nécessaire
+nano docker-compose.backups.yml
+```
+
+Le fichier `docker-compose.backups.yml.example` dans le repo contient la configuration complète avec Traefik.
+
 ## 🔄 Processus de Déploiement
 
 Le workflow GitHub Actions :
 
 1. ✅ Checkout le code
 2. ✅ Setup Node.js 20
-3. ✅ Build le frontend (Angular)
+3. ✅ Build le frontend (Angular) - vérification uniquement
 4. ✅ Se connecte au VPS via SSH
 5. ✅ Pull les dernières modifications
-6. ✅ Build le frontend sur le VPS
-7. ✅ Build le backend sur le VPS
-8. ✅ Redémarre les services Docker
-9. ✅ Affiche les logs pour vérification
+6. ✅ Utilise Docker pour builder automatiquement les conteneurs
+7. ✅ Redémarre les services Docker avec `docker compose up -d --build`
+8. ✅ Affiche les logs pour vérification
 
 ## 📝 Déploiement Manuel
 
@@ -97,9 +113,19 @@ docker logs wp-ctrl-backups-frontend
 docker compose -f docker-compose.backups.yml restart
 ```
 
+## 🌐 Accès à l'Application
+
+Une fois déployée, l'application est accessible via Traefik :
+
+- **URL** : `https://vps-15e30067.vps.ovh.net`
+- **Authentification** : Basique HTTP (même fichier que le dashboard Traefik)
+- **Frontend** : Sert les fichiers Angular statiques
+- **Backend API** : Accessible via `/api/*` et proxy vers le backend
+
 ## 🔐 Sécurité
 
 - Les secrets sont stockés de manière sécurisée dans GitHub
 - La clé SSH est utilisée uniquement pour le déploiement
-- Les builds sont effectués sur le VPS pour éviter d'exposer des secrets
+- Les builds sont effectués dans Docker pour isoler les dépendances
+- Authentification basique HTTP via Traefik pour protéger l'accès
 
