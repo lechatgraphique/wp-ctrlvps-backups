@@ -35,6 +35,15 @@ jobs:
           VPS_IP=$(getent ahostsv4 ${{ secrets.VPS_HOST }} | head -1 | awk '{print $1}')
           echo "VPS_IP=$VPS_IP" >> $GITHUB_OUTPUT
           echo "Resolved ${{ secrets.VPS_HOST }} to IPv4: $VPS_IP"
+          echo "VPS_HOST=${{ secrets.VPS_HOST }}" >> $GITHUB_OUTPUT
+
+      - name: Test SSH connection
+        run: |
+          echo "Testing SSH connection to ${{ steps.resolve_ip.outputs.VPS_IP }}"
+          echo "Username: ${{ secrets.VPS_USER }}"
+          echo "Port: ${{ secrets.VPS_PORT }}"
+          echo "SSH Key length: ${#VPS_SSH_KEY}"
+          # Note: On ne peut pas afficher la clé pour des raisons de sécurité
 
       - name: Deploy to VPS
         uses: appleboy/ssh-action@v1.0.0
