@@ -1,0 +1,103 @@
+<div class="mt-8">
+  <div class="flex items-center justify-between">
+    <h1 class="text-2xl font-bold">Logs & Alertes et sauvegarde</h1>
+    <p-button 
+      icon="pi pi-refresh" 
+      [loading]="loading()" 
+      (onClick)="refresh()"
+      label="Actualiser"
+      [outlined]="true">
+    </p-button>
+  </div>
+
+  <p-tabs [(value)]="activeTab">
+    <p-tablist>
+      <p-tab value="logs">Logs</p-tab>
+      <p-tab value="alerts">Alertes</p-tab>
+    </p-tablist>
+    <p-tabpanels [pt]="tabPanelsPt">
+      <p-tabpanel value="logs" [pt]="tabPanelPt">
+    
+      @if (loading()) {
+        <div class="flex flex-col items-center gap-2 mt-8">
+            <p-progress-spinner strokeWidth="3" fill="transparent" animationDuration=".9s" [style]="{ width: '38px', height: '38px' }" />
+            <span>Chargement des logs...</span>
+        </div>
+
+      } @else if (logs().length === 0) {
+        <div class="empty-state">
+          <i class="pi pi-info-circle"></i>
+          <span>Aucun log disponible</span>
+        </div>
+      } @else {
+         <div class="flex flex-col gap-2">
+           @for (log of logs(); track log.timestamp) {
+             <div
+                  class="p-4 rounded-lg border flex flex-col gap-2"
+                  [ngClass]="{
+                    'bg-red-50 border-red-200': log.level === 'error',
+                    'bg-orange-50 border-orange-200': log.level === 'warning',
+                    'bg-blue-50 border-blue-200': log.level === 'info'
+                  }">
+               <div class="flex items-center justify-between gap-2">
+                 <div class="flex items-center gap-2">
+                    <i [class]="getLevelIcon(log.level)" 
+                    [ngClass]="{
+                      'text-red-600': log.level === 'error',
+                      'text-orange-600': log.level === 'warning',
+                      'text-blue-600': log.level === 'info'
+                    }"></i>
+                   <span [ngClass]="{
+                     'text-red-600': log.level === 'error',
+                     'text-orange-600': log.level === 'warning',
+                     'text-blue-600': log.level === 'info'
+                   }">{{ log.level.toUpperCase() }}</span>
+                  </div>
+                  <span class="text-sm text-gray-500">{{ formatDate(log.timestamp) }}</span>
+               </div>
+               <div class="text-sm text-gray-700 pl-6">{{ log.message }}</div>
+             </div>
+           }
+         </div>
+      }
+
+      </p-tabpanel>
+      <p-tabpanel value="alerts" [pt]="tabPanelPt">
+        @if (alerts().length === 0) {
+          <div class="flex flex-col items-center gap-2 mt-8">
+            <i class="pi pi-info-circle"></i>
+            <span>Aucune alerte</span>
+          </div>
+        } @else {
+          <div class="flex flex-col gap-2">
+            @for (alert of alerts(); track alert.timestamp) {
+              <div
+                   class="p-4 rounded-lg border flex flex-col gap-2"
+                   [ngClass]="{
+                     'bg-red-50 border-red-200': alert.type === 'error',
+                     'bg-orange-50 border-orange-200': alert.type === 'warning'
+                   }">
+                <div class="flex items-center justify-between gap-2">
+                  <div class="flex items-center gap-2">
+                    <i [class]="alert.type === 'error' ? 'pi pi-exclamation-circle' : 'pi pi-exclamation-triangle'"
+                       [ngClass]="{
+                         'text-red-600': alert.type === 'error',
+                         'text-orange-600': alert.type === 'warning'
+                       }"></i>
+                    <span [ngClass]="{
+                      'text-red-600': alert.type === 'error',
+                      'text-orange-600': alert.type === 'warning'
+                    }">{{ alert.type.toUpperCase() }}</span>
+                  </div>
+                  <span class="text-sm text-gray-500">{{ formatDate(alert.timestamp) }}</span>
+                </div>
+                <div class="text-sm text-gray-700 pl-6">{{ alert.message }}</div>
+              </div>
+            }
+          </div>
+        }
+      </p-tabpanel>
+    </p-tabpanels>
+  </p-tabs>
+</div>
+
