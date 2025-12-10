@@ -1,0 +1,23 @@
+node_modules/
+dist/
+.env
+.env.local
+.env.*.local
+*.env
+!*.env.example
+*.log
+.DS_Store
+
+# Clés SSH
+*.pem
+*.key
+id_rsa
+id_ed25519
+id_ed25519_vps
+*.pub
+!*.pub.example
+
+# Fichiers sensibles
+**/secrets/
+**/credentials/
+

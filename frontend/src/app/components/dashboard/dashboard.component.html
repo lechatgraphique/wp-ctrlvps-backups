@@ -1,0 +1,150 @@
+<div class="dashboard-container">
+  <div class="dashboard-header">
+    <h1 class="text-2xl font-bold">Tableau de bord</h1>
+    <p-button 
+      icon="pi pi-refresh" 
+      [loading]="loading()" 
+      (onClick)="refresh()"
+      label="Actualiser"
+      [outlined]="true">
+    </p-button>
+  </div>
+
+  @if (loading()) {
+    <div class="loading-container">
+      <p>Chargement des statistiques...</p>
+    </div>
+  } @else if (error()) {
+    <p-card>
+      <div class="error-message">
+        <i class="pi pi-exclamation-triangle"></i>
+        <p>{{ error() }}</p>
+      </div>
+    </p-card>
+  } @else if (stats()) {
+    @let statsValue = stats()!;
+    
+    <!-- Statistiques système -->
+    @if (systemStats()) {
+      @let systemStatsValue = systemStats()!;
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+        @if (cpuChartData()) {
+          <p-card header="CPU">
+            <div class="flex items-center justify-between mb-2">
+              <span class="text-sm text-gray-600">Utilisation CPU</span>
+              <span class="text-lg font-bold">{{ systemStatsValue.cpu.usage }}%</span>
+            </div>
+            <p-chart type="doughnut" [data]="cpuChartData()!" [options]="chartOptions()!" class="h-64"></p-chart>
+            <div class="text-center text-sm text-gray-500 mt-2">{{ systemStatsValue.cpu.cores }} cœurs</div>
+          </p-card>
+        }
+
+        @if (memoryChartData()) {
+          <p-card header="Mémoire RAM">
+            <div class="flex items-center justify-between mb-2">
+              <span class="text-sm text-gray-600">Utilisation Mémoire</span>
+              <span class="text-lg font-bold">{{ systemStatsValue.memory.percentage }}%</span>
+            </div>
+            <p-chart type="doughnut" [data]="memoryChartData()!" [options]="chartOptions()!" class="h-64"></p-chart>
+            <div class="text-center text-sm text-gray-500 mt-2">
+              {{ formatBytes(systemStatsValue.memory.used) }} / {{ formatBytes(systemStatsValue.memory.total) }}
+            </div>
+          </p-card>
+        }
+      </div>
+    }
+
+    <!-- Taux de succès/erreur -->
+    @if (successErrorChartData()) {
+      <p-card header="Taux de succès et d'erreur des backups" class="mb-4">
+        <p-chart type="bar" [data]="successErrorChartData()!" [options]="chartOptions()!" class="h-64"></p-chart>
+      </p-card>
+    }
+
+    <!-- Espace disque avec MeterGroup -->
+    @if (diskMeterData().length > 0) {
+      <p-card header="Espace disque" class="mb-4">
+        <p-metergroup [value]="diskMeterData()" labelPosition="start"></p-metergroup>
+        <div class="mt-4 text-sm text-gray-600">
+          <div class="flex justify-between">
+            <span>Total utilisé:</span>
+            <span class="font-semibold">{{ formatBytes(statsValue.diskUsage.used) }} / {{ formatBytes(statsValue.diskUsage.total) }}</span>
+          </div>
+        </div>
+      </p-card>
+    }
+
+    <!-- Montfreeride -->
+    <p-card header="Montfreeride" class="mb-4">
+      <div class="project-stats">
+        <div class="stat-section">
+          <h3>MySQL</h3>
+          <div class="stat-item">
+            <span class="stat-label">Nombre de sauvegardes:</span>
+            <span class="stat-value">{{ statsValue.montfreeride.mysql.count }}</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-label">Dernière sauvegarde:</span>
+            <span class="stat-value">{{ formatDate(statsValue.montfreeride.mysql.lastBackup) }}</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-label">Taille totale:</span>
+            <span class="stat-value">{{ formatBytes(statsValue.montfreeride.mysql.totalSize) }}</span>
+          </div>
+        </div>
+        <div class="stat-section">
+          <h3>wp-content</h3>
+          <div class="stat-item">
+            <span class="stat-label">Nombre de sauvegardes:</span>
+            <span class="stat-value">{{ statsValue.montfreeride.files.count }}</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-label">Dernière sauvegarde:</span>
+            <span class="stat-value">{{ formatDate(statsValue.montfreeride.files.lastBackup) }}</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-label">Taille totale:</span>
+            <span class="stat-value">{{ formatBytes(statsValue.montfreeride.files.totalSize) }}</span>
+          </div>
+        </div>
+      </div>
+    </p-card>
+
+    <!-- Oxygenefit -->
+    <p-card header="Oxygenefit" class="mb-4">
+      <div class="project-stats">
+        <div class="stat-section">
+          <h3>MySQL</h3>
+          <div class="stat-item">
+            <span class="stat-label">Nombre de sauvegardes:</span>
+            <span class="stat-value">{{ statsValue.oxygenefit.mysql.count }}</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-label">Dernière sauvegarde:</span>
+            <span class="stat-value">{{ formatDate(statsValue.oxygenefit.mysql.lastBackup) }}</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-label">Taille totale:</span>
+            <span class="stat-value">{{ formatBytes(statsValue.oxygenefit.mysql.totalSize) }}</span>
+          </div>
+        </div>
+        <div class="stat-section">
+          <h3>wp-content</h3>
+          <div class="stat-item">
+            <span class="stat-label">Nombre de sauvegardes:</span>
+            <span class="stat-value">{{ statsValue.oxygenefit.files.count }}</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-label">Dernière sauvegarde:</span>
+            <span class="stat-value">{{ formatDate(statsValue.oxygenefit.files.lastBackup) }}</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-label">Taille totale:</span>
+            <span class="stat-value">{{ formatBytes(statsValue.oxygenefit.files.totalSize) }}</span>
+          </div>
+        </div>
+      </div>
+    </p-card>
+  }
+</div>
+

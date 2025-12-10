@@ -1,0 +1,99 @@
+<p-dialog 
+  [visible]="visible()" 
+  [modal]="true"
+  [closable]="!restoring()"
+  [draggable]="false"
+  [resizable]="false"
+  (onHide)="onCancel()"
+  header="Restaurer une sauvegarde"
+  [style]="{ width: '600px' }">
+  
+  @if (success()) {
+    <div class="success-message">
+      <i class="pi pi-check-circle"></i>
+      <p>Restauration réussie !</p>
+    </div>
+  } @else {
+    <div class="restore-content">
+      <div class="backup-info">
+        <h3>Informations de la sauvegarde</h3>
+        <div class="info-item">
+          <span class="label">Nom:</span>
+          <span class="value">{{ backup().name }}</span>
+        </div>
+        <div class="info-item">
+          <span class="label">Taille:</span>
+          <span class="value">{{ formatBytes(backup().size) }}</span>
+        </div>
+        <div class="info-item">
+          <span class="label">Date:</span>
+          <span class="value">{{ formatDate(backup().date) }}</span>
+        </div>
+        <div class="info-item">
+          <span class="label">Projet:</span>
+          <span class="value">{{ project() }}</span>
+        </div>
+        <div class="info-item">
+          <span class="label">Type:</span>
+          <span class="value">{{ backupType() === 'mysql' ? 'MySQL' : 'wp-content' }}</span>
+        </div>
+      </div>
+
+      <div class="warning">
+        <i class="pi pi-exclamation-triangle"></i>
+        <p><strong>Attention:</strong> Cette opération va remplacer les données actuelles. Cette action est irréversible.</p>
+      </div>
+
+      @if (!confirming()) {
+        <div class="confirmation-step">
+          <p>Êtes-vous sûr de vouloir restaurer cette sauvegarde ?</p>
+          <div class="button-group">
+            <p-button 
+              label="Annuler" 
+              [outlined]="true"
+              (onClick)="onCancel()"
+              [disabled]="restoring()">
+            </p-button>
+            <p-button 
+              label="Continuer" 
+              severity="warn"
+              (onClick)="confirming.set(true)"
+              [disabled]="restoring()">
+            </p-button>
+          </div>
+        </div>
+      } @else {
+        <div class="confirmation-step">
+          <p>Pour confirmer, veuillez taper <strong>"RESTAURER"</strong> dans le champ ci-dessous:</p>
+          <input 
+            type="text" 
+            pInputText
+            [(ngModel)]="confirmationText"
+            [disabled]="restoring()"
+            placeholder="Tapez RESTAURER pour confirmer">
+          
+          @if (error()) {
+            <p-message severity="error" [text]="error()!"></p-message>
+          }
+
+          <div class="button-group">
+            <p-button 
+              label="Annuler" 
+              [outlined]="true"
+              (onClick)="confirming.set(false)"
+              [disabled]="restoring()">
+            </p-button>
+            <p-button 
+              label="Restaurer" 
+              severity="danger"
+              [loading]="restoring()"
+              (onClick)="onConfirm()"
+              [disabled]="restoring() || confirmationText() !== requiredConfirmationText">
+            </p-button>
+          </div>
+        </div>
+      }
+    </div>
+  }
+</p-dialog>
+

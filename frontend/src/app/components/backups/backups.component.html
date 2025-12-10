@@ -1,0 +1,107 @@
+<div class="backups-container">
+  <div class="backups-header">
+    <h1>Gestion des Sauvegardes</h1>
+    <p-button 
+      icon="pi pi-refresh" 
+      [loading]="loading()" 
+      (onClick)="refresh()"
+      label="Actualiser"
+      [outlined]="true">
+    </p-button>
+  </div>
+
+  <div class="filters">
+    <div class="filter-group">
+      <label>Projet:</label>
+      <div class="button-group">
+        <p-button 
+          [label]="'Montfreeride'"
+          [outlined]="selectedProject() !== 'montfreeride'"
+          (onClick)="setProject('montfreeride')">
+        </p-button>
+        <p-button 
+          [label]="'Oxygenefit'"
+          [outlined]="selectedProject() !== 'oxygenefit'"
+          (onClick)="setProject('oxygenefit')">
+        </p-button>
+      </div>
+    </div>
+
+    <div class="filter-group">
+      <label>Type:</label>
+      <div class="button-group">
+        <p-button 
+          [label]="'MySQL'"
+          [outlined]="selectedType() !== 'mysql'"
+          (onClick)="setType('mysql')">
+        </p-button>
+        <p-button 
+          [label]="'wp-content'"
+          [outlined]="selectedType() !== 'files'"
+          (onClick)="setType('files')">
+        </p-button>
+      </div>
+    </div>
+  </div>
+
+    @if (loading()) {
+      <div class="loading">Chargement des sauvegardes...</div>
+    } @else if (currentBackups().length === 0) {
+      <div class="empty-state">Aucune sauvegarde disponible</div>
+    } @else {
+      <p-table 
+        [value]="currentBackups()" 
+        [paginator]="true" 
+        [rows]="10"
+        size="small"
+        [rowsPerPageOptions]="[10, 25, 50]"
+        styleClass="p-datatable-striped">
+        <ng-template pTemplate="header">
+          <tr>
+            <th>Nom</th>
+            <th>Taille</th>
+            <th>Date</th>
+            <th>Actions</th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-backup>
+          <tr>
+            <td>{{ backup.name }}</td>
+            <td>{{ formatBytes(backup.size) }}</td>
+            <td>{{ formatDate(backup.date) }}</td>
+            <td>
+              <div class="action-buttons">
+                <p-button 
+                  icon="pi pi-download" 
+                  [outlined]="true"
+                  (onClick)="downloadBackup(backup)"
+                  pTooltip="Télécharger"
+                  size="small"
+                  tooltipPosition="top">
+                </p-button>
+                <p-button 
+                  icon="pi pi-refresh" 
+                  [outlined]="true"
+                  severity="warn"
+                  size="small"
+                  (onClick)="openRestoreDialog(backup)"
+                  pTooltip="Restaurer"
+                  tooltipPosition="top">
+                </p-button>
+              </div>
+            </td>
+          </tr>
+        </ng-template>
+      </p-table>
+    }
+  @if (restoreDialogVisible() && selectedBackup()) {
+    <app-restore-dialog
+      [visible]="restoreDialogVisible()"
+      [backup]="selectedBackup()!"
+      [project]="selectedProject()"
+      [backupType]="selectedType()"
+      (close)="closeRestoreDialog()">
+    </app-restore-dialog>
+  }
+</div>
+

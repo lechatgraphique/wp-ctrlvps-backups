@@ -1,0 +1,82 @@
+.dashboard-container {
+  padding: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.dashboard-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+
+  h1 {
+    margin: 0;
+    font-size: 2rem;
+    font-weight: 600;
+  }
+}
+
+.loading-container {
+  text-align: center;
+  padding: 3rem;
+}
+
+.error-message {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  color: var(--p-red-500);
+
+  i {
+    font-size: 1.5rem;
+  }
+}
+
+.disk-usage {
+  .disk-usage-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+  }
+}
+
+.project-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+}
+
+.stat-section {
+  h3 {
+    margin-top: 0;
+    margin-bottom: 1rem;
+    color: var(--p-primary-color);
+    font-size: 1.25rem;
+  }
+}
+
+.stat-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid var(--p-surface-border);
+
+  &:last-child {
+    border-bottom: none;
+  }
+
+  .stat-label {
+    color: var(--p-text-secondary-color);
+  }
+
+  .stat-value {
+    font-weight: 600;
+  }
+}
+
+.mb-4 {
+  margin-bottom: 1.5rem;
+}
+

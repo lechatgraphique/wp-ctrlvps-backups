@@ -1,0 +1,17 @@
+/* Tailwind CSS v4 avec PrimeUI Plugin */
+/* Documentation : https://primeng.org/tailwind */
+/* Note: @import est nécessaire pour Tailwind CSS v4 */
+@import "tailwindcss";
+
+/* PrimeIcons */
+@import "primeicons/primeicons.css";
+
+/* Global Styles */
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: auto 20px;
+  padding: 0;
+}

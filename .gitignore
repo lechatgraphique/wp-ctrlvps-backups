@@ -1,0 +1,66 @@
+# Fichiers sensibles
+.env
+.env.local
+.env.*.local
+*.env
+**/.env
+**/.env.local
+
+# Clés SSH
+*.pem
+*.key
+id_rsa
+id_ed25519
+id_ed25519_vps
+*.pub
+!*.pub.example
+
+# Node modules
+node_modules/
+**/node_modules/
+
+# Build outputs
+dist/
+build/
+**/dist/
+**/build/
+backend/dist/
+frontend/dist/
+
+# Logs
+*.log
+logs/
+**/*.log
+
+# OS files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# Angular
+.angular/
+.cache/
+
+# TypeScript
+*.tsbuildinfo
+
+# Test coverage
+coverage/
+.nyc_output/
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+
