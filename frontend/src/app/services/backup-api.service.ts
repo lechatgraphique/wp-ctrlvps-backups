@@ -85,7 +85,8 @@ export interface AlertEntry {
 })
 export class BackupApiService {
   private readonly http = inject(HttpClient);
-  private readonly apiUrl = 'http://localhost:3000/api'; // À configurer selon l'environnement
+  // Utiliser un chemin relatif pour passer par Traefik et l'authentification HTTP basique
+  private readonly apiUrl = '/api';
 
   getLogs(): Observable<LogEntry[]> {
     return this.http.get<LogEntry[]>(`${this.apiUrl}/logs`);
