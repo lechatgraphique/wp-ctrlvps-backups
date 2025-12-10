@@ -27,10 +27,13 @@ build/
 backend/dist/
 frontend/dist/
 
-# Logs
+# Logs (fichiers de logs uniquement, pas les composants Angular)
 *.log
-logs/
 **/*.log
+# Exclure les dossiers logs/ sauf les composants Angular
+logs/
+!frontend/src/app/components/logs/
+!**/components/logs/
 
 # OS files
 .DS_Store
