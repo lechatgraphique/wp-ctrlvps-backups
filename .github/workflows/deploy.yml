@@ -23,6 +23,11 @@ jobs:
         run: |
           npm ci
           npm run build
+          
+      - name: Verify build output
+        working-directory: ./frontend
+        run: |
+          ls -la dist/frontend/browser/ || echo "Build output not found"
 
       - name: Deploy to VPS
         uses: appleboy/ssh-action@v1.0.0
@@ -39,6 +44,7 @@ jobs:
             
             # Build frontend sur le VPS
             cd frontend
+            rm -rf node_modules dist
             npm ci
             npm run build
             cd ..
