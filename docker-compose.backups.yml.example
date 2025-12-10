@@ -1,0 +1,60 @@
+# Configuration Docker Compose pour WP Ctrl Backups
+# À copier sur le VPS dans /home/deploy/docker-services/docker-compose.backups.yml
+# et adapter avec vos variables d'environnement
+
+services:
+  # Backend API
+  wp-ctrl-backups-backend:
+    build:
+      context: ./apps/wp-ctrl-backups/backend
+      dockerfile: Dockerfile
+    container_name: wp-ctrl-backups-backend
+    restart: unless-stopped
+    networks:
+      - proxy-network
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+      - VPS_HOST=${VPS_HOST}
+      - VPS_USER=${VPS_USER}
+      - VPS_PORT=${VPS_PORT}
+      - VPS_PRIVATE_KEY_PATH=/root/.ssh/id_ed25519
+      - VPS_BACKUP_DIR=/home/deploy/docker-services/backups
+      - VPS_MYSQL_BACKUP_DIR=/home/deploy/docker-services/backups/mysql
+      - VPS_FILES_BACKUP_DIR=/home/deploy/docker-services/backups/files
+    volumes:
+      - /home/deploy/.ssh/id_ed25519_vps:/root/.ssh/id_ed25519:ro
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.wp-ctrl-backups-api.rule=Host(`vps-15e30067.vps.ovh.net`) && PathPrefix(`/api`)"
+      - "traefik.http.routers.wp-ctrl-backups-api.entrypoints=websecure"
+      - "traefik.http.routers.wp-ctrl-backups-api.tls=true"
+      - "traefik.http.middlewares.wp-ctrl-backups-api-stripprefix.stripprefix.prefixes=/api"
+      - "traefik.http.routers.wp-ctrl-backups-api.middlewares=wp-ctrl-backups-api-stripprefix"
+      - "traefik.http.services.wp-ctrl-backups-api.loadbalancer.server.port=3000"
+      - "traefik.http.middlewares.wp-ctrl-backups-auth.basicauth.usersfile=/etc/traefik/basicauth.usersfile"
+      - "traefik.http.routers.wp-ctrl-backups-api.middlewares=wp-ctrl-backups-auth"
+
+  # Frontend Angular
+  wp-ctrl-backups-frontend:
+    build:
+      context: ./apps/wp-ctrl-backups/frontend
+      dockerfile: Dockerfile
+    container_name: wp-ctrl-backups-frontend
+    restart: unless-stopped
+    networks:
+      - proxy-network
+    depends_on:
+      - wp-ctrl-backups-backend
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.wp-ctrl-backups.rule=Host(`vps-15e30067.vps.ovh.net`)"
+      - "traefik.http.routers.wp-ctrl-backups.entrypoints=websecure"
+      - "traefik.http.routers.wp-ctrl-backups.tls=true"
+      - "traefik.http.routers.wp-ctrl-backups.middlewares=wp-ctrl-backups-auth"
+      - "traefik.http.services.wp-ctrl-backups.loadbalancer.server.port=80"
+
+networks:
+  proxy-network:
+    external: true
+
