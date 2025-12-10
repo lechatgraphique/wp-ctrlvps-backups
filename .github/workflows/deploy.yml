@@ -18,7 +18,7 @@ jobs:
         with:
           node-version: '20'
 
-      - name: Build Frontend
+      - name: Build Frontend (verification)
         working-directory: ./frontend
         run: |
           npm ci
@@ -35,15 +35,6 @@ jobs:
           VPS_IP=$(getent ahostsv4 ${{ secrets.VPS_HOST }} | head -1 | awk '{print $1}')
           echo "VPS_IP=$VPS_IP" >> $GITHUB_OUTPUT
           echo "Resolved ${{ secrets.VPS_HOST }} to IPv4: $VPS_IP"
-          echo "VPS_HOST=${{ secrets.VPS_HOST }}" >> $GITHUB_OUTPUT
-
-      - name: Test SSH connection
-        run: |
-          echo "Testing SSH connection to ${{ steps.resolve_ip.outputs.VPS_IP }}"
-          echo "Username: ${{ secrets.VPS_USER }}"
-          echo "Port: ${{ secrets.VPS_PORT }}"
-          echo "SSH Key length: ${#VPS_SSH_KEY}"
-          # Note: On ne peut pas afficher la clé pour des raisons de sécurité
 
       - name: Deploy to VPS
         uses: appleboy/ssh-action@v1.0.0
@@ -60,26 +51,19 @@ jobs:
             # Pull les dernières modifications
             git pull origin main
             
-            # Build frontend sur le VPS
-            cd frontend
-            rm -rf node_modules dist
-            npm ci
-            npm run build
-            cd ..
-            
-            # Build backend sur le VPS
-            cd backend
-            npm ci
-            npm run build
-            cd ..
-            
-            # Redémarrer les services Docker
+            # Démarrer/redémarrer les services Docker (ils builderont automatiquement)
             cd /home/deploy/docker-services
-            docker compose -f docker-compose.backups.yml restart wp-ctrl-backups-backend wp-ctrl-backups-frontend
+            docker compose -f docker-compose.backups.yml up -d --build
+            
+            # Attendre que les conteneurs soient prêts
+            sleep 5
             
             # Vérifier les logs
             echo "=== Backend logs ==="
-            docker logs --tail 20 wp-ctrl-backups-backend
+            docker logs --tail 30 wp-ctrl-backups-backend 2>&1 || echo "Backend container not found or not started"
+            echo ""
             echo "=== Frontend logs ==="
-            docker logs --tail 20 wp-ctrl-backups-frontend
-
+            docker logs --tail 30 wp-ctrl-backups-frontend 2>&1 || echo "Frontend container not found or not started"
+            echo ""
+            echo "=== Container status ==="
+            docker ps --filter "name=wp-ctrl-backups" --format "table {{.Names}}\t{{.Status}}"
