@@ -64,3 +64,6 @@ tmp/
 temp/
 *.tmp
 
+# Dossiers de test/clone locaux
+wp-ctrl-backups/
+
