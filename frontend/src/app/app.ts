@@ -24,7 +24,7 @@ import { MenuItem } from 'primeng/api';
 export class App {
   protected readonly menuItems = signal<MenuItem[]>([
     {
-      label: 'Tableau de bord',
+      label: 'Dashboard',
       icon: 'pi pi-home',
       routerLink: '/dashboard'
     },

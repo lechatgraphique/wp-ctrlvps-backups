@@ -1,51 +1,35 @@
-<div class="backups-container">
-  <div class="backups-header">
-    <h1>Gestion des Sauvegardes</h1>
-    <p-button 
-      icon="pi pi-refresh" 
-      [loading]="loading()" 
-      (onClick)="refresh()"
-      label="Actualiser"
-      [outlined]="true">
-    </p-button>
+<div class="mt-8">
+  <div class="flex gap-2 items-end justify-between">
+    <h1 class="text-2xl font-semibold">Backup</h1>
+    <div class="flex gap-2">
+      <p-button 
+        icon="pi pi-refresh" 
+        [loading]="loading()" 
+        (onClick)="refresh()"
+        label="Actualiser"
+        [outlined]="true">
+      </p-button>
+    </div>
   </div>
-
-  <div class="filters">
-    <div class="filter-group">
-      <label>Projet:</label>
-      <div class="button-group">
-        <p-button 
-          [label]="'Montfreeride'"
-          [outlined]="selectedProject() !== 'montfreeride'"
-          (onClick)="setProject('montfreeride')">
-        </p-button>
-        <p-button 
-          [label]="'Oxygenefit'"
-          [outlined]="selectedProject() !== 'oxygenefit'"
-          (onClick)="setProject('oxygenefit')">
-        </p-button>
-      </div>
-    </div>
-
-    <div class="filter-group">
-      <label>Type:</label>
-      <div class="button-group">
-        <p-button 
-          [label]="'MySQL'"
-          [outlined]="selectedType() !== 'mysql'"
-          (onClick)="setType('mysql')">
-        </p-button>
-        <p-button 
-          [label]="'wp-content'"
-          [outlined]="selectedType() !== 'files'"
-          (onClick)="setType('files')">
-        </p-button>
-      </div>
-    </div>
+  <p-divider />
+  <div class="flex justify-end gap-2 mb-4">
+    <p-selectbutton
+      [options]="backupTypeOptions"
+      [(ngModel)]="typeValue"
+      optionLabel="label"
+      optionValue="value">
+    </p-selectbutton>
+    <p-select
+      [options]="projectOptions"
+      [(ngModel)]="projectValue"
+      optionLabel="label"
+      optionValue="value"
+      [style]="{'min-width': '200px'}">
+    </p-select>
   </div>
 
     @if (loading()) {
-      <div class="loading">Chargement des sauvegardes...</div>
+      <app-backup-table-secleton />
     } @else if (currentBackups().length === 0) {
       <div class="empty-state">Aucune sauvegarde disponible</div>
     } @else {
@@ -58,19 +42,17 @@
         styleClass="p-datatable-striped">
         <ng-template pTemplate="header">
           <tr>
-            <th>Nom</th>
-            <th>Taille</th>
             <th>Date</th>
-            <th>Actions</th>
+            <th>Taille</th>
+            <th><i class="pi pi-cog"></i></th>
           </tr>
         </ng-template>
         <ng-template pTemplate="body" let-backup>
           <tr>
-            <td>{{ backup.name }}</td>
+            <td class="font-medium">{{ formatDate(backup.date) }}</td>
             <td>{{ formatBytes(backup.size) }}</td>
-            <td>{{ formatDate(backup.date) }}</td>
             <td>
-              <div class="action-buttons">
+              <div class="flex gap-2">
                 <p-button 
                   icon="pi pi-download" 
                   [outlined]="true"

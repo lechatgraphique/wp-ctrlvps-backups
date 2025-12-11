@@ -10,6 +10,7 @@ import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { MessageModule } from 'primeng/message';
 import { LogListComponent } from '../shared/components/log-list';
 import { DividerModule } from 'primeng/divider';
+
 @Component({
   selector: 'app-logs',
   imports: [CommonModule, CardModule, ButtonModule, TagModule, TabsModule, ProgressSpinnerModule, MessageModule, LogListComponent, DividerModule],

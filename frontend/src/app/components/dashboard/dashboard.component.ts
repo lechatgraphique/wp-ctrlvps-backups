@@ -7,10 +7,10 @@ import { ButtonModule } from 'primeng/button';
 import { ChartModule } from 'primeng/chart';
 import { MeterGroupModule } from 'primeng/metergroup';
 import { BackupApiService, BackupStats, SystemStats } from '../../services/backup-api.service';
-
+import { DividerModule } from 'primeng/divider';
 @Component({
   selector: 'app-dashboard',
-  imports: [CommonModule, CardModule, ProgressBarModule, TagModule, ButtonModule, ChartModule, MeterGroupModule],
+  imports: [CommonModule, CardModule, ProgressBarModule, TagModule, ButtonModule, ChartModule, MeterGroupModule, DividerModule],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush

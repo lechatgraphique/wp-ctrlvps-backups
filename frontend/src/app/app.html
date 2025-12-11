@@ -1,29 +1,14 @@
-<div class="app-container never-dark">
-  <header class="app-header">
-    <div class="header-container">
-      <!-- Brand Logo -->
-      <div class="flex items-center gap-3">
-        <div class="flex items-center justify-center bg-primary rounded-full" style="width: 2.5rem; height: 2.5rem;">
-          <i class="pi pi-server text-primary-contrast"></i>
+<div class="mt-5">
+  <p-menubar [model]="menuItems()">
+    <ng-template #start>
+      <div class="flex items-center gap-2">
+        <div class="flex items-center justify-center ml-2">
+          <i class="pi pi-wave-pulse text-primary-contrast"></i>
         </div>
-        <span class="text-xl font-bold text-color">WP Ctrl Backups</span>
+        <span class="text-xl font-semibold text-color">WP Ctrl Backups</span>
       </div>
-
-      <!-- Navigation Links -->
-      <nav class="flex items-center gap-1 flex-1 justify-center">
-        @for (item of menuItems(); track item.routerLink) {
-          <a 
-            [routerLink]="item.routerLink"
-            routerLinkActive="active"
-            [routerLinkActiveOptions]="{ exact: item.routerLink === '/dashboard' }"
-            class="flex items-center gap-2 px-3 py-2 rounded-md text-color no-underline font-medium transition-all duration-200 hover:bg-surface-hover nav-link">
-            <i [class]="item.icon"></i>
-            <span>{{ item.label }}</span>
-          </a>
-        }
-      </nav>
-
-      <!-- Right Actions -->
+    </ng-template>
+    <ng-template #end>
       <div class="flex items-center gap-2">
         <p-button 
           icon="pi pi-bell" 
@@ -32,25 +17,9 @@
           severity="secondary"
           styleClass="w-10 h-10">
         </p-button>
-        <p-button 
-          icon="pi pi-cog" 
-          [text]="true"
-          [rounded]="true"
-          severity="secondary"
-          styleClass="w-10 h-10">
-        </p-button>
-        <div class="w-1px h-5 bg-surface-border mx-2"></div>
-        <div class="flex items-center gap-2 px-2 py-1 rounded-md cursor-pointer hover:bg-surface-hover transition-all duration-200">
-          <p-avatar 
-            label="BC" 
-            shape="circle"
-            style="width: 2rem; height: 2rem; font-size: 0.875rem;">
-          </p-avatar>
-          <span class="font-medium text-color text-sm">Bastien</span>
-        </div>
       </div>
-    </div>
-  </header>
+    </ng-template>
+  </p-menubar>
 
   <main class="app-main">
     <router-outlet />

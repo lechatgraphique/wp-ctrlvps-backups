@@ -1,31 +1,49 @@
 import { Component, ChangeDetectionStrategy, signal, computed, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { CardModule } from 'primeng/card';
 import { TableModule } from 'primeng/table';
 import { ButtonModule } from 'primeng/button';
 import { TagModule } from 'primeng/tag';
 import { DialogModule } from 'primeng/dialog';
 import { TooltipModule } from 'primeng/tooltip';
+import { SelectModule } from 'primeng/select';
+import { SelectButtonModule } from 'primeng/selectbutton';
 import { BackupApiService, BackupFile } from '../../services/backup-api.service';
 import { RestoreDialogComponent } from '../restore-dialog/restore-dialog.component';
-
+import { DividerModule } from 'primeng/divider';
+import { BackupTableSecleton } from '../shared/components/tabs-secleton/backup-table-secleton'; 
 type Project = 'montfreeride' | 'oxygenefit';
 type BackupType = 'mysql' | 'files';
+
+interface ProjectOption {
+  label: string;
+  value: Project;
+}
+
+interface BackupTypeOption {
+  label: string;
+  value: BackupType;
+}
 
 @Component({
   selector: 'app-backups',
   imports: [
     CommonModule,
+    FormsModule,
     CardModule,
     TableModule,
     ButtonModule,
     TagModule,
     DialogModule,
     TooltipModule,
-    RestoreDialogComponent
+    SelectModule,
+    SelectButtonModule,
+    RestoreDialogComponent,
+    DividerModule,
+    BackupTableSecleton
   ],
   templateUrl: './backups.component.html',
-  styleUrl: './backups.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class BackupsComponent {
@@ -33,6 +51,33 @@ export class BackupsComponent {
 
   protected readonly selectedProject = signal<Project>('montfreeride');
   protected readonly selectedType = signal<BackupType>('mysql');
+  
+  // Propriétés pour le binding bidirectionnel avec ngModel
+  protected get projectValue(): Project {
+    return this.selectedProject();
+  }
+  
+  protected set projectValue(value: Project) {
+    this.onProjectChange(value);
+  }
+  
+  protected get typeValue(): BackupType {
+    return this.selectedType();
+  }
+  
+  protected set typeValue(value: BackupType) {
+    this.onTypeChange(value);
+  }
+  
+  protected readonly projectOptions: ProjectOption[] = [
+    { label: 'Montfreeride', value: 'montfreeride' },
+    { label: 'Oxygenefit', value: 'oxygenefit' }
+  ];
+
+  protected readonly backupTypeOptions: BackupTypeOption[] = [
+    { label: 'Sql', value: 'mysql' },
+    { label: 'Backup', value: 'files' }
+  ];
   protected readonly mysqlBackups = signal<BackupFile[]>([]);
   protected readonly filesBackups = signal<BackupFile[]>([]);
   protected readonly loading = signal(true);
@@ -74,12 +119,12 @@ export class BackupsComponent {
     });
   }
 
-  protected setProject(project: Project): void {
+  protected onProjectChange(project: Project): void {
     this.selectedProject.set(project);
     this.loadBackups();
   }
 
-  protected setType(type: BackupType): void {
+  protected onTypeChange(type: BackupType): void {
     this.selectedType.set(type);
   }
 

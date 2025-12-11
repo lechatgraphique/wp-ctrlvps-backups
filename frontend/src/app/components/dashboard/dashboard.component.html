@@ -1,14 +1,17 @@
-<div class="dashboard-container">
-  <div class="dashboard-header">
-    <h1 class="text-2xl font-bold">Tableau de bord</h1>
-    <p-button 
-      icon="pi pi-refresh" 
-      [loading]="loading()" 
-      (onClick)="refresh()"
-      label="Actualiser"
-      [outlined]="true">
-    </p-button>
+<div class="mt-8">
+  <div class="flex gap-2 items-end justify-between">
+    <h1 class="text-2xl font-semibold">Dashboard</h1>
+    <div class="flex gap-2">
+      <p-button 
+        icon="pi pi-refresh" 
+        [loading]="loading()" 
+        (onClick)="refresh()"
+        label="Actualiser"
+        [outlined]="true">
+      </p-button>
+    </div>
   </div>
+  <p-divider />
 
   @if (loading()) {
     <div class="loading-container">
@@ -74,77 +77,88 @@
       </p-card>
     }
 
-    <!-- Montfreeride -->
-    <p-card header="Montfreeride" class="mb-4">
-      <div class="project-stats">
-        <div class="stat-section">
-          <h3>MySQL</h3>
-          <div class="stat-item">
-            <span class="stat-label">Nombre de sauvegardes:</span>
-            <span class="stat-value">{{ statsValue.montfreeride.mysql.count }}</span>
+    <!-- Statistiques par projet -->
+    <div class="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4 mb-4">
+      <!-- Montfreeride MySQL -->
+      <div class="bg-surface-0 dark:bg-surface-900 shadow-sm p-5 rounded-2xl">
+        <div class="flex justify-between gap-4">
+          <div class="flex flex-col gap-2">
+            <span class="text-surface-700 dark:text-surface-300 font-normal leading-tight">Montfreeride MySQL</span>
+            <div class="text-surface-900 dark:text-surface-0 font-semibold text-2xl! leading-tight!">{{ statsValue.montfreeride.mysql.count }}</div>
           </div>
-          <div class="stat-item">
-            <span class="stat-label">Dernière sauvegarde:</span>
-            <span class="stat-value">{{ formatDate(statsValue.montfreeride.mysql.lastBackup) }}</span>
-          </div>
-          <div class="stat-item">
-            <span class="stat-label">Taille totale:</span>
-            <span class="stat-value">{{ formatBytes(statsValue.montfreeride.mysql.totalSize) }}</span>
+          <div class="flex items-center justify-center bg-gradient-to-b from-cyan-400 dark:from-cyan-300 to-cyan-600 dark:to-cyan-500 rounded-lg w-10 h-10">
+            <i class="pi pi-database text-surface-0 dark:text-surface-900 text-xl! leading-none!"></i>
           </div>
         </div>
-        <div class="stat-section">
-          <h3>wp-content</h3>
-          <div class="stat-item">
-            <span class="stat-label">Nombre de sauvegardes:</span>
-            <span class="stat-value">{{ statsValue.montfreeride.files.count }}</span>
-          </div>
-          <div class="stat-item">
-            <span class="stat-label">Dernière sauvegarde:</span>
-            <span class="stat-value">{{ formatDate(statsValue.montfreeride.files.lastBackup) }}</span>
-          </div>
-          <div class="stat-item">
-            <span class="stat-label">Taille totale:</span>
-            <span class="stat-value">{{ formatBytes(statsValue.montfreeride.files.totalSize) }}</span>
-          </div>
+        <div class="mt-4">
+          <span class="text-surface-600 dark:text-surface-300 font-medium leading-tight">{{ formatBytes(statsValue.montfreeride.mysql.totalSize) }}</span>
+          <span class="text-surface-500 dark:text-surface-300 leading-tight"> total</span>
+        </div>
+        <div class="mt-2">
+          <span class="text-surface-500 dark:text-surface-300 text-sm leading-tight">{{ formatDate(statsValue.montfreeride.mysql.lastBackup) }}</span>
         </div>
       </div>
-    </p-card>
 
-    <!-- Oxygenefit -->
-    <p-card header="Oxygenefit" class="mb-4">
-      <div class="project-stats">
-        <div class="stat-section">
-          <h3>MySQL</h3>
-          <div class="stat-item">
-            <span class="stat-label">Nombre de sauvegardes:</span>
-            <span class="stat-value">{{ statsValue.oxygenefit.mysql.count }}</span>
+      <!-- Montfreeride wp-content -->
+      <div class="bg-surface-0 dark:bg-surface-900 shadow-sm p-5 rounded-2xl">
+        <div class="flex justify-between gap-4">
+          <div class="flex flex-col gap-2">
+            <span class="text-surface-700 dark:text-surface-300 font-normal leading-tight">Montfreeride wp-content</span>
+            <div class="text-surface-900 dark:text-surface-0 font-semibold text-2xl! leading-tight!">{{ statsValue.montfreeride.files.count }}</div>
           </div>
-          <div class="stat-item">
-            <span class="stat-label">Dernière sauvegarde:</span>
-            <span class="stat-value">{{ formatDate(statsValue.oxygenefit.mysql.lastBackup) }}</span>
-          </div>
-          <div class="stat-item">
-            <span class="stat-label">Taille totale:</span>
-            <span class="stat-value">{{ formatBytes(statsValue.oxygenefit.mysql.totalSize) }}</span>
+          <div class="flex items-center justify-center bg-gradient-to-b from-orange-400 dark:from-orange-300 to-orange-600 dark:to-orange-500 rounded-lg w-10 h-10">
+            <i class="pi pi-folder text-surface-0 dark:text-surface-900 text-xl! leading-none!"></i>
           </div>
         </div>
-        <div class="stat-section">
-          <h3>wp-content</h3>
-          <div class="stat-item">
-            <span class="stat-label">Nombre de sauvegardes:</span>
-            <span class="stat-value">{{ statsValue.oxygenefit.files.count }}</span>
-          </div>
-          <div class="stat-item">
-            <span class="stat-label">Dernière sauvegarde:</span>
-            <span class="stat-value">{{ formatDate(statsValue.oxygenefit.files.lastBackup) }}</span>
-          </div>
-          <div class="stat-item">
-            <span class="stat-label">Taille totale:</span>
-            <span class="stat-value">{{ formatBytes(statsValue.oxygenefit.files.totalSize) }}</span>
-          </div>
+        <div class="mt-4">
+          <span class="text-surface-600 dark:text-surface-300 font-medium leading-tight">{{ formatBytes(statsValue.montfreeride.files.totalSize) }}</span>
+          <span class="text-surface-500 dark:text-surface-300 leading-tight"> total</span>
+        </div>
+        <div class="mt-2">
+          <span class="text-surface-500 dark:text-surface-300 text-sm leading-tight">{{ formatDate(statsValue.montfreeride.files.lastBackup) }}</span>
         </div>
       </div>
-    </p-card>
+
+      <!-- Oxygenefit MySQL -->
+      <div class="bg-surface-0 dark:bg-surface-900 shadow-sm p-5 rounded-2xl">
+        <div class="flex justify-between gap-4">
+          <div class="flex flex-col gap-2">
+            <span class="text-surface-700 dark:text-surface-300 font-normal leading-tight">Oxygenefit MySQL</span>
+            <div class="text-surface-900 dark:text-surface-0 font-semibold text-2xl! leading-tight!">{{ statsValue.oxygenefit.mysql.count }}</div>
+          </div>
+          <div class="flex items-center justify-center bg-gradient-to-b from-slate-400 dark:from-slate-300 to-slate-600 dark:to-slate-500 rounded-lg w-10 h-10">
+            <i class="pi pi-database text-surface-0 dark:text-surface-900 text-xl! leading-none!"></i>
+          </div>
+        </div>
+        <div class="mt-4">
+          <span class="text-surface-600 dark:text-surface-300 font-medium leading-tight">{{ formatBytes(statsValue.oxygenefit.mysql.totalSize) }}</span>
+          <span class="text-surface-500 dark:text-surface-300 leading-tight"> total</span>
+        </div>
+        <div class="mt-2">
+          <span class="text-surface-500 dark:text-surface-300 text-sm leading-tight">{{ formatDate(statsValue.oxygenefit.mysql.lastBackup) }}</span>
+        </div>
+      </div>
+
+      <!-- Oxygenefit wp-content -->
+      <div class="bg-surface-0 dark:bg-surface-900 shadow-sm p-5 rounded-2xl">
+        <div class="flex justify-between gap-4">
+          <div class="flex flex-col gap-2">
+            <span class="text-surface-700 dark:text-surface-300 font-normal leading-tight">Oxygenefit wp-content</span>
+            <div class="text-surface-900 dark:text-surface-0 font-semibold text-2xl! leading-tight!">{{ statsValue.oxygenefit.files.count }}</div>
+          </div>
+          <div class="flex items-center justify-center bg-gradient-to-b from-violet-400 dark:from-violet-300 to-violet-600 dark:to-violet-500 rounded-lg w-10 h-10">
+            <i class="pi pi-folder text-surface-0 dark:text-surface-900 text-xl! leading-none!"></i>
+          </div>
+        </div>
+        <div class="mt-4">
+          <span class="text-surface-600 dark:text-surface-300 font-medium leading-tight">{{ formatBytes(statsValue.oxygenefit.files.totalSize) }}</span>
+          <span class="text-surface-500 dark:text-surface-300 leading-tight"> total</span>
+        </div>
+        <div class="mt-2">
+          <span class="text-surface-500 dark:text-surface-300 text-sm leading-tight">{{ formatDate(statsValue.oxygenefit.files.lastBackup) }}</span>
+        </div>
+      </div>
+    </div>
   }
 </div>
 

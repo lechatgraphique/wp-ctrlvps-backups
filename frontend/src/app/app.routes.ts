@@ -12,7 +12,7 @@ export const routes: Routes = [
   },
   {
     path: 'logs',
-    loadComponent: () => import('./components/logs/logs.component').then(m => m.LogsComponent)
+    loadComponent: () => import('./components/logs/log.component').then(m => m.LogsComponent)
   },
   {
     path: 'backups',
